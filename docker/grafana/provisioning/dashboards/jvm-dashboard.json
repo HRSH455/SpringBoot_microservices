@@ -1,0 +1,32 @@
+{
+  "id": null,
+  "uid": "jvm-metrics",
+  "title": "JVM Metrics",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "JVM Memory Used",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes",
+          "legendFormat": "{{area}} {{id}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
+

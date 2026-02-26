@@ -1,0 +1,158 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+  namespace: observability
+data:
+  tempo.yml: |
+    server:
+      http_listen_port: 3200
+      grpc_listen_port: 4317
+    distributor:
+      rate_limit_bytes: 5242880
+      log_received_traces: true
+    ingester:
+      max_block_duration: 5m
+    compactor:
+      compaction:
+        compacted_block_retention: 10m
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        block:
+          version: vParquet3
+        wal:
+          path: /var/tempo/wal
+        cache: memcached
+        memcached:
+          consistent_hash: true
+          max_idle_conns: 100
+          update_interval: 1m
+          addresses:
+            - memcached:11211
+    metrics_generator:
+      processor:
+        service_graphs:
+          enabled: true
+        span_metrics:
+          enabled: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tempo-pvc
+  namespace: observability
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memcached
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      containers:
+        - name: memcached
+          image: memcached:latest
+          ports:
+            - containerPort: 11211
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  namespace: observability
+spec:
+  type: ClusterIP
+  ports:
+    - port: 11211
+      targetPort: 11211
+  selector:
+    app: memcached
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tempo
+  namespace: observability
+spec:
+  serviceName: tempo
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tempo
+  template:
+    metadata:
+      labels:
+        app: tempo
+    spec:
+      containers:
+        - name: tempo
+          image: grafana/tempo:latest
+          args:
+            - -config.file=/etc/tempo/tempo.yml
+          ports:
+            - containerPort: 3200
+              name: tempo-http
+            - containerPort: 4317
+              name: otlp-grpc
+          volumeMounts:
+            - name: config
+              mountPath: /etc/tempo
+              readOnly: true
+            - name: storage
+              mountPath: /var/tempo
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+      volumes:
+        - name: config
+          configMap:
+            name: tempo-config
+        - name: storage
+          persistentVolumeClaim:
+            claimName: tempo-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+  namespace: observability
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3200
+      targetPort: 3200
+      name: tempo-http
+    - port: 4317
+      targetPort: 4317
+      name: otlp-grpc
+  selector:
+    app: tempo

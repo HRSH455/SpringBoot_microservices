@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: apps
+
+namePrefix: product-
+
+commonLabels:
+  app: product-service
+  version: v1
+
+commonAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/actuator/prometheus"
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - secret.yaml
+
+configMapGenerator:
+  - name: config
+    files:
+      - config/application.yml
+
+secretGenerator:
+  - name: credentials
+    env: config/secrets.env
+    type: Opaque

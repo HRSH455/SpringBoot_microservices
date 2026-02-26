@@ -1,0 +1,32 @@
+{
+  "id": null,
+  "uid": "kafka-metrics",
+  "title": "Kafka Metrics",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Kafka Producer Records Sent",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(kafka_producer_record_send_total[5m])",
+          "legendFormat": "{{client_id}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
+

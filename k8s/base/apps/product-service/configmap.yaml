@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: product-service
+      data:
+        mongodb:
+          auto-index-creation: true
+      jackson:
+        serialization:
+          indent-output: false
+    server:
+      port: 8080
+      shutdown: graceful
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,prometheus,info
+      endpoint:
+        health:
+          show-details: when-authorized
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+      tracing:
+        sampling:
+          probability: 1.0
+      otlp:
+        tracing:
+          endpoint: http://tempo:4317
+    logging:
+      level:
+        root: INFO
+        com.microservices: DEBUG

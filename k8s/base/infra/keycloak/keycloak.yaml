@@ -1,0 +1,169 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: keycloak-mysql
+spec:
+  serviceName: keycloak-mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-mysql
+  template:
+    metadata:
+      labels:
+        app: keycloak-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0-alpine
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-mysql-credentials
+                  key: root-password
+            - name: MYSQL_DATABASE
+              value: keycloak
+            - name: MYSQL_USER
+              value: keycloak
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-mysql-credentials
+                  key: password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: keycloak-mysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-mysql
+spec:
+  clusterIP: None
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: keycloak-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:23.0.7
+          args:
+            - "start"
+            - "--db=mysql"
+            - "--hostname-strict=false"
+            - "--proxy=xforwarded"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEYCLOAK_ADMIN
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-credentials
+                  key: admin-password
+            - name: KC_DB
+              value: mysql
+            - name: KC_DB_URL
+              value: jdbc:mysql://keycloak-mysql:3306/keycloak
+            - name: KC_DB_USERNAME
+              value: keycloak
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-mysql-credentials
+                  key: password
+            - name: KC_HOSTNAME
+              value: keycloak.localdev.me
+            - name: KC_HTTP_ENABLED
+              value: "true"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: keycloak
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-credentials
+type: Opaque
+stringData:
+  admin-password: "admin"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-mysql-credentials
+type: Opaque
+stringData:
+  root-password: "mysql"
+  password: "keycloak"

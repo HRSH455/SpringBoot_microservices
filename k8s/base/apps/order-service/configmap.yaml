@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: order-service
+      jpa:
+        hibernate:
+          ddl-auto: validate
+        show-sql: false
+        properties:
+          hibernate:
+            format_sql: true
+      datasource:
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 5
+      kafka:
+        producer:
+          acks: all
+          retries: 3
+      jackson:
+        serialization:
+          indent-output: false
+    server:
+      port: 8081
+      shutdown: graceful
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,prometheus,info
+      endpoint:
+        health:
+          show-details: when-authorized
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+      tracing:
+        sampling:
+          probability: 1.0
+      otlp:
+        tracing:
+          endpoint: http://tempo:4317
+    logging:
+      level:
+        root: INFO
+        com.microservices: DEBUG
+        org.springframework.security: DEBUG
+    resilience4j:
+      circuitbreaker:
+        instances:
+          inventory-service:
+            registerHealthIndicator: true
+            slidingWindowSize: 10
+            minimumNumberOfCalls: 5
+            permittedNumberOfCallsInHalfOpenState: 3
+            automaticTransitionFromOpenToHalfOpenEnabled: true
+            waitDurationInOpenState: 10s
+            failureRateThreshold: 50
+            slowCallRateThreshold: 50
+            slowCallDurationThreshold: 2s
+      retry:
+        instances:
+          inventory-service:
+            maxAttempts: 3
+            waitDuration: 1000
+      timeout:
+        instances:
+          inventory-service:
+            timeoutDuration: 5s

@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: api-gateway
+      cloud:
+        gateway:
+          routes:
+            - id: product-service
+              uri: http://product-service:8080
+              predicates:
+                - Path=/api/products/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+                - name: CircuitBreaker
+                  args:
+                    name: productCircuitBreaker
+                    fallback: forward:/fallback/product
+            - id: order-service
+              uri: http://order-service:8081
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+                - name: CircuitBreaker
+                  args:
+                    name: orderCircuitBreaker
+            - id: inventory-service
+              uri: http://inventory-service:8082
+              predicates:
+                - Path=/api/inventory/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - id: swagger-ui
+              uri: http://localhost:9000
+              predicates:
+                - Path=/swagger-ui.html,/swagger-ui/**,/v3/api-docs,/v3/api-docs/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 100
+                    redis-rate-limiter.burstCapacity: 200
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: http://keycloak:8080/realms/spring-microservices-security-realm
+              jwk-set-uri: http://keycloak:8080/realms/spring-microservices-security-realm/protocol/openid-connect/certs
+    server:
+      port: 9000
+      shutdown: graceful
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,prometheus,info
+      tracing:
+        sampling:
+          probability: 1.0
+    logging:
+      level:
+        root: INFO
+        org.springframework.cloud.gateway: DEBUG
+        org.springframework.security: DEBUG

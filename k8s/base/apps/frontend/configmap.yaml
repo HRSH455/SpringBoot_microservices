@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  env.js: |
+    window.APP_CONFIG = {
+      apiGatewayUrl: 'http://api.localdev.me',
+      keycloakUrl: 'http://keycloak.localdev.me',
+      keycloakRealm: 'spring-microservices-security-realm',
+      keycloakClientId: 'spring-cloud-client'
+    };

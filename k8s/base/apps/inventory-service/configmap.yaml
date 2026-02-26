@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: inventory-service
+      datasource:
+        hikari:
+          maximum-pool-size: 10
+    server:
+      port: 8082
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,prometheus
+      tracing:
+        sampling:
+          probability: 1.0

@@ -1,48 +1,31 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import {HttpInterceptorFn} from "@angular/common/http";
+import {inject} from "@angular/core";
+import {OidcSecurityService} from "angular-auth-oidc-client";
+import {switchMap, catchError} from "rxjs";
+import {throwError} from "rxjs";
 
 /**
- * HTTP Interceptor to attach JWT access token to outgoing requests.
+ * Functional HTTP interceptor to attach JWT access token to outgoing requests.
  * Automatically includes Authorization: Bearer <token> header.
+ * Handles errors in token retrieval gracefully.
  */
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private oidcService: OidcSecurityService) {}
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(OidcSecurityService);
 
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    const token = this.oidcService.getAccessToken();
-
-    // Add Authorization header if token exists
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-
-    // Add custom headers for tracing
-    request = request.clone({
-      setHeaders: {
-        'X-Request-ID': this.generateRequestId(),
-        'X-Forwarded-Proto': 'https',
-      },
-    });
-
-    return next.handle(request);
-  }
-
-  private generateRequestId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
+  return authService.getAccessToken().pipe(
+    switchMap(token => {
+      if (token) {
+        const header = 'Bearer ' + token;
+        const headers = req.headers.set('Authorization', header);
+        const clonedReq = req.clone({headers});
+        return next(clonedReq);
+      }
+      return next(req);
+    }),
+    catchError(error => {
+      console.error('Error retrieving access token:', error);
+      // Continue without token if retrieval fails
+      return next(req);
+    })
+  );
 }

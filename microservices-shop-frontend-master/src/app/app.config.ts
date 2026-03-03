@@ -2,24 +2,23 @@ import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptors} from "@angular/common/http";
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {authConfig} from "./config/auth.config";
 import {provideAuth} from "angular-auth-oidc-client";
-import {authInterceptor} from "./interceptor/auth.interceptor";
-import {HttpErrorInterceptor} from "./interceptors/http-error.interceptor";
+import {authInterceptor} from "./interceptors/auth.interceptor";
+import {httpErrorInterceptor} from "./interceptors/http-error.interceptor";
 
+/**
+ * Angular application configuration
+ * Configures routing, HTTP client with functional interceptors, and OIDC authentication
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, httpErrorInterceptor])
     ),
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpErrorInterceptor,
-      multi: true
-    },
     provideAuth(authConfig),
   ]
 };

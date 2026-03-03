@@ -503,14 +503,4 @@ kubectl describe pod -n apps <pod-name>
 kubectl exec -n infra statefulset/mysql-order -- mysql -u root -pmysql -e "SHOW DATABASES;"
 ```
 
-## Contributing
 
-1. Create feature branch
-2. Update K8s manifests as needed
-3. Test in dev cluster
-4. Submit PR for review
-5. CI/CD auto-builds and tests on push
-
-## License
-
-MIT

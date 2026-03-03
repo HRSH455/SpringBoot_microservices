@@ -5,9 +5,6 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
 public record OrderRequest(
-    @NotNull(message = "ID cannot be null")
-    Long id,
-    
     @NotBlank(message = "Order number cannot be blank")
     @Size(min = 3, max = 50, message = "Order number must be between 3 and 50 characters")
     String orderNumber,

@@ -8,10 +8,10 @@ ADD COLUMN reserved_quantity INT DEFAULT 0;
 
 -- Add unique constraint on sku_code
 ALTER TABLE t_inventory
-ADD CONSTRAINT uq_sku_code UNIQUE (skuCode);
+ADD CONSTRAINT uq_sku_code UNIQUE (sku_code);
 
 -- Add indexes for better query performance
-CREATE INDEX idx_sku_code ON t_inventory(skuCode);
+CREATE INDEX idx_sku_code ON t_inventory(sku_code);
 CREATE INDEX idx_quantity ON t_inventory(quantity);
 
 -- Add constraint to ensure non-negative quantities

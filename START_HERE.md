@@ -2,24 +2,8 @@
 
 ## 📖 Documentation Index
 
-Read in this order:
 
-1. **[COMPLETION_CHECKLIST.md](COMPLETION_CHECKLIST.md)** ← START HERE
-   - What was generated
-   - File checklist
-   - Quick start commands
-
-2. **[COMPLETE_GUIDE.md](COMPLETE_GUIDE.md)** 
-   - Architecture overview
-   - Core components explained
-   - Design decisions vs. course
-
-3. **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)**
-   - Quick reference
-   - Key files table
-   - Deployment commands
-
-4. **[README.kubernetes.md](README.kubernetes.md)**
+1  **[README.kubernetes.md](README.kubernetes.md)**
    - Detailed setup guide
    - Local dev cluster instructions
    - Production enhancements

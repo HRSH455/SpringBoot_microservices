@@ -4,6 +4,9 @@
   "namespace": "com.microservices.order_service.event",
   "fields": [
     { "name": "orderNumber", "type": "string" },
+    { "name": "orderId", "type": ["null", "long"], "default": null },
+    { "name": "skuCode", "type": ["null", "string"], "default": null },
+    { "name": "quantity", "type": ["null", "int"], "default": null },
     { "name": "email", "type": "string" },
     { "name": "firstName", "type": "string" },
     { "name": "lastName", "type": "string" }

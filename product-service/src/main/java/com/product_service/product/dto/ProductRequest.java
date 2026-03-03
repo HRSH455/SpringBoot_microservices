@@ -7,7 +7,6 @@ import java.math.BigDecimal;
  * Product creation request with validation
  */
 public record ProductRequest(
-    String id,
     
     @NotBlank(message = "Product name cannot be blank")
     @Size(min = 3, max = 100, message = "Product name must be between 3 and 100 characters")

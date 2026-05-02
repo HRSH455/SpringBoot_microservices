@@ -132,7 +132,7 @@ services:
 
   inventory-service:
     build:
-      context: ./inventory_service
+      context: ./inventory-service
       dockerfile: Dockerfile
     container_name: inventory-service
     ports:

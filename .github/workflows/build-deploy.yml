@@ -8,10 +8,19 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      image_name: ${{ steps.lower.outputs.image_name }}
+    steps:
+      - name: Lowercase image name
+        id: lower
+        run: echo "image_name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -50,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}
+          images: ${{ env.REGISTRY }}/${{ needs.prepare.outputs.image_name }}/${{ matrix.service }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -69,7 +78,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ matrix.service }}
 
   security-scan:
-    needs: build
+    needs: [prepare, build]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -84,7 +93,7 @@ jobs:
       - name: Run Trivy scanner on ${{ matrix.service }}
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}/${{ matrix.service }}:main
+          image-ref: ${{ env.REGISTRY }}/${{ needs.prepare.outputs.image_name }}/${{ matrix.service }}:main
           format: 'sarif'
           output: 'trivy-${{ matrix.service }}.sarif'
 
@@ -95,31 +104,19 @@ jobs:
           category: ${{ matrix.service }}
 
   # deploy:
-  #   needs: build
+  #   needs: [prepare, security-scan]
   #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v4
-
-  #     - name: Set up kubeconfig
-  #       run: |
-  #         mkdir -p $HOME/.kube
-  #         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
-  #         chmod 600 $HOME/.kube/config
-
-  #     - name: Deploy
-  #       run: kubectl apply -k k8s/overlays/dev
-
-  #     - name: Wait for rollouts
-  #       run: |
-  #         for svc in api-gateway product-service order-service inventory-service notification-service; do
-  #           kubectl rollout status -n apps deployment/$svc --timeout=300s
-  #         done
-
-  #     - name: Notify
-  #       uses: 8398a7/action-slack@v3
-  #       if: always()
+  #
+  #     - name: SSH into Oracle VM and deploy
+  #       uses: appleboy/ssh-action@v1
   #       with:
-  #         status: ${{ job.status }}
-  #         text: 'Deployment ${{ job.status }}'
-  #         webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+  #         host: ${{ secrets.VM_HOST }}
+  #         username: ${{ secrets.VM_USER }}
+  #         key: ${{ secrets.VM_SSH_KEY }}
+  #         script: |
+  #           cd ~/app
+  #           docker-compose pull
+  #           docker-compose up -d

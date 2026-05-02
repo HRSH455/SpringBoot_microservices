@@ -61,9 +61,9 @@ management:
     health:
       probes:
         enabled: true
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
     distribution:
       percentiles-histogram:
@@ -74,13 +74,15 @@ management:
       application: ${spring.application.name}
       environment: ${ENVIRONMENT:dev}
   tracing:
+    enabled: true
     sampling:
-      probability: 1.0
+        probability: 1.0
     propagation:
-      type: jaeger
-  otlp:
+        type: b3_multi
+  management:
+  zipkin:
     tracing:
-      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://tempo:4317}
+      endpoint: ${ZIPKIN_ENDPOINT:http://tempo:9411/api/v2/spans}
   observations:
     key-values:
       application: ${spring.application.name}

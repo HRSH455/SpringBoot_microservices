@@ -1,2 +1,20 @@
 <app-header></app-header>
+<div class="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+  <div *ngIf="notifications$ | async as notifications">
+    <div *ngFor="let note of notifications"
+         class="rounded-lg border p-4 shadow-lg"
+         [class.bg-red-50]="note.type === 'error'"
+         [class.border-red-300]="note.type === 'error'"
+         [class.text-red-900]="note.type === 'error'"
+         [class.bg-green-50]="note.type === 'success'"
+         [class.border-green-300]="note.type === 'success'"
+         [class.text-green-900]="note.type === 'success'"
+         [class.bg-blue-50]="note.type === 'info'"
+         [class.border-blue-300]="note.type === 'info'"
+         [class.text-blue-900]="note.type === 'info'">
+      <p class="font-semibold mb-1 capitalize">{{ note.type }}</p>
+      <p>{{ note.message }}</p>
+    </div>
+  </div>
+</div>
 <router-outlet />

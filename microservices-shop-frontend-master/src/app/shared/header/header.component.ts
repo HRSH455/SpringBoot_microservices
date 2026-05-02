@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
     this.oidcSecurityService.userData$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({userData}) => {
-        this.username = userData.preferred_username;
+        this.username = userData?.preferred_username ?? '';
       });
   }
 

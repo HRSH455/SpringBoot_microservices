@@ -12,7 +12,7 @@ RUN npm run build
 # Stage 2: Runtime (nginx)
 FROM nginx:alpine
 
-COPY --from=builder /build/dist/microservices-shop-frontend /usr/share/nginx/html
+COPY --from=builder /build/dist/microservices-shop-frontend/browser /usr/share/nginx/html
 
 # Custom nginx config for SPA
 COPY nginx.conf /etc/nginx/nginx.conf

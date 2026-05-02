@@ -25,7 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(error => {
       console.error('Error retrieving access token:', error);
       // Continue without token if retrieval fails
-      return next(req);
+      return throwError(() => error);
     })
   );
 }

@@ -2,6 +2,7 @@ import {Component, inject} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Product} from "../../model/product";
 import {ProductService} from "../../services/product/product.service";
+import {ErrorNotificationService} from "../../services/error-notification.service";
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -9,19 +10,20 @@ import {NgIf} from "@angular/common";
   standalone: true,
   imports: [ReactiveFormsModule, NgIf],
   templateUrl: './add-product.component.html',
-  styleUrl: './add-product.component.css'
+  styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent {
   addProductForm: FormGroup;
   private readonly productService = inject(ProductService);
+  private readonly notificationService = inject(ErrorNotificationService);
   productCreated = false;
 
   constructor(private fb: FormBuilder) {
     this.addProductForm = this.fb.group({
-      skuCode: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      price: [0, [Validators.required]]
+      skuCode: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+      price: [0, [Validators.required, Validators.min(0.01)]]
     })
   }
 
@@ -33,10 +35,17 @@ export class AddProductComponent {
         description: this.addProductForm.get('description')?.value,
         price: this.addProductForm.get('price')?.value
       }
-      this.productService.createProduct(product).subscribe(product => {
-        this.productCreated = true;
-        this.addProductForm.reset();
-      })
+      this.productService.createProduct(product).subscribe({
+        next: () => {
+          this.productCreated = true;
+          this.addProductForm.reset();
+          this.notificationService.success('Product created successfully.');
+        },
+        error: (err) => {
+          const message = err?.message || 'Failed to create product.';
+          this.notificationService.error(message);
+        }
+      });
     } else {
       console.log('Form is not valid');
     }

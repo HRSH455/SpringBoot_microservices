@@ -1,6 +1,8 @@
+import {inject} from '@angular/core';
 import {HttpInterceptorFn, HttpErrorResponse} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {ErrorNotificationService} from '../services/error-notification.service';
 
 /**
  * Functional HTTP Error Interceptor
@@ -10,6 +12,7 @@ import {catchError} from 'rxjs/operators';
  * - Extensible for retry logic, error tracking, etc.
  */
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
+  const notificationService = inject(ErrorNotificationService);
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       let errorMessage = 'An error occurred';
@@ -66,6 +69,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         );
       }
 
+      notificationService.error(errorMessage);
       return throwError(() => new Error(errorMessage));
     })
   );

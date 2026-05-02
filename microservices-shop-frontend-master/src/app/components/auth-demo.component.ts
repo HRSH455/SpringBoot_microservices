@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable } from 'rxjs';
+import {ngIf} from "@angular/common";
 
 /**
  * Example component demonstrating OIDC authentication in Angular.
  */
 @Component({
   selector: 'app-auth-demo',
+  StandAlone: true,
+  imports: [ngIf],
   template: `
     <div>
       <ng-container *ngIf="isAuthenticated$ | async as isAuthenticated">

@@ -9,7 +9,9 @@
         </button>
       }
     </div>
-    @if (products.length > 0) {
+    @if (products.length === 0) {
+      <p class="text-red-500 font-semibold">No products found!</p>
+    } @else {
       @if (orderSuccess) {
         <h4 class="text-green-500 font-bold">Order Placed Successfully</h4>
       } @else if (orderFailed) {
@@ -27,8 +29,8 @@
                 Price: {{ product.price }}
               </span>
               <br/>
-              <span >
-                Quantity: <input type="number" #quantityInput/>
+              <span>
+                Quantity: <input type="number" #quantityInput />
               </span>
               <br/>
             </div>
@@ -39,12 +41,15 @@
           </li>
         }
       </ul>
-    } @else if (products.length === 100) {
-      <span class="text-sm text-gray-700">
-      Click <a class="text-blue-500 hover:underline cursor-pointer">Load More</a> to see more products
-    </span>
-    } @else {
-      <p class="text-red-500 font-semibold">No products found!</p>
+      @if (products.length >= 100) {
+        <div class="mt-4 text-right">
+          <button
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            (click)="loadMore()">
+            Load More
+          </button>
+        </div>
+      }
     }
   </div>
 </main>

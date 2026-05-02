@@ -13,9 +13,8 @@ data:
             - id: product-service
               uri: http://product-service:8080
               predicates:
-                - Path=/api/products/**
+                - Path=/api/product/**
               filters:
-                - RewritePath=/api/(?<segment>.*), /$\{segment}
                 - name: CircuitBreaker
                   args:
                     name: productCircuitBreaker
@@ -23,9 +22,8 @@ data:
             - id: order-service
               uri: http://order-service:8081
               predicates:
-                - Path=/api/orders/**
+                - Path=/api/order/**
               filters:
-                - RewritePath=/api/(?<segment>.*), /$\{segment}
                 - name: CircuitBreaker
                   args:
                     name: orderCircuitBreaker
@@ -34,7 +32,6 @@ data:
               predicates:
                 - Path=/api/inventory/**
               filters:
-                - RewritePath=/api/(?<segment>.*), /$\{segment}
             - id: swagger-ui
               uri: http://localhost:9000
               predicates:

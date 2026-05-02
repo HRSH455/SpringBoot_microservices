@@ -5,6 +5,8 @@ import com.microservices.order_service.dto.OrderRequest.OrderRequest;
 import com.microservices.order_service.event.OrderPlacedEvent;
 import com.microservices.order_service.model.Order;
 import com.microservices.order_service.repository.OrderRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -51,10 +53,7 @@ public class OrderService {
             orderRequest.skuCode(), orderRequest.quantity());
         
         // Check inventory first
-        boolean isProductInStock = inventoryClient.isInStock(
-            orderRequest.skuCode(), 
-            orderRequest.quantity()
-        );
+        boolean isProductInStock = checkInventory(orderRequest.skuCode(), orderRequest.quantity());
 
         if (!isProductInStock) {
             String errorMsg = "Product with SkuCode " + orderRequest.skuCode() + " is not in stock";
@@ -95,6 +94,17 @@ public class OrderService {
         // Publish event - Spring will only fire this AFTER the transaction commits
         // This ensures order is persisted before any downstream services see the event
         eventPublisher.publishEvent(orderPlacedEvent);
+    }
+
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
+    @Retry(name = "inventory")
+    private boolean checkInventory(String skuCode, Integer quantity) {
+        return inventoryClient.isInStock(skuCode, quantity);
+    }
+
+    private boolean fallbackMethod(String skuCode, Integer quantity, Throwable throwable) {
+        log.info("Cannot get Inventory for skucode {}, failure reason: {}", skuCode, throwable.getMessage());
+        return false;
     }
 }
 

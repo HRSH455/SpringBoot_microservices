@@ -43,7 +43,7 @@ public class NotificationService {
             log.info("Order notification email sent to {}", orderPlacedEvent.getEmail());
         } catch (MailException e) {
             log.error("Exception occurred when sending mail to {}", orderPlacedEvent.getEmail(), e);
-            throw new RuntimeException(String.format("Exception occurred when sending mail to %s", orderPlacedEvent.getEmail()), e);
+            // Do not throw exception to avoid stopping the consumer
         }
     }
 }

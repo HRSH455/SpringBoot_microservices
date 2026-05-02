@@ -87,7 +87,7 @@ services:
 
   api-gateway:
     build:
-      context: ./work/api-gateway
+      context: ./api-gateway
       dockerfile: Dockerfile
     container_name: api-gateway
     ports:
@@ -102,7 +102,7 @@ services:
 
   product-service:
     build:
-      context: ./work/product-service
+      context: ./product-service
       dockerfile: Dockerfile
     container_name: product-service
     ports:
@@ -117,7 +117,7 @@ services:
 
   order-service:
     build:
-      context: ./work/order-service
+      context: ./order-service
       dockerfile: Dockerfile
     container_name: order-service
     ports:
@@ -132,7 +132,7 @@ services:
 
   inventory-service:
     build:
-      context: ./work/inventory_service
+      context: ./inventory_service
       dockerfile: Dockerfile
     container_name: inventory-service
     ports:
@@ -147,7 +147,7 @@ services:
 
   notification-service:
     build:
-      context: ./work/notification-service
+      context: ./notification-service
       dockerfile: Dockerfile
     container_name: notification-service
     ports:

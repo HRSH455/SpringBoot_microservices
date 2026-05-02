@@ -5,6 +5,7 @@
  */
 package com.microservices.order_service.event;
 
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.avro.message.BinaryMessageEncoder;
@@ -13,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8958792948269752127L;
+  private static final long serialVersionUID = -3246133831779459493L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlacedEvent\",\"namespace\":\"com.microservices.order_service.event\",\"fields\":[{\"name\":\"orderNumber\",\"type\":\"string\"},{\"name\":\"email\",\"type\":\"string\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlacedEvent\",\"namespace\":\"com.microservices.order_service.event\",\"fields\":[{\"name\":\"orderNumber\",\"type\":\"string\"},{\"name\":\"orderId\",\"type\":[\"null\",\"long\"],\"default\":null},{\"name\":\"skuCode\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"quantity\",\"type\":[\"null\",\"int\"],\"default\":null},{\"name\":\"email\",\"type\":\"string\"},{\"name\":\"firstName\",\"type\":\"string\"},{\"name\":\"lastName\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -73,6 +74,9 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
   }
 
   private java.lang.CharSequence orderNumber;
+  private java.lang.Long orderId;
+  private java.lang.CharSequence skuCode;
+  private java.lang.Integer quantity;
   private java.lang.CharSequence email;
   private java.lang.CharSequence firstName;
   private java.lang.CharSequence lastName;
@@ -87,12 +91,18 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
   /**
    * All-args constructor.
    * @param orderNumber The new value for orderNumber
+   * @param orderId The new value for orderId
+   * @param skuCode The new value for skuCode
+   * @param quantity The new value for quantity
    * @param email The new value for email
    * @param firstName The new value for firstName
    * @param lastName The new value for lastName
    */
-  public OrderPlacedEvent(java.lang.CharSequence orderNumber, java.lang.CharSequence email, java.lang.CharSequence firstName, java.lang.CharSequence lastName) {
+  public OrderPlacedEvent(java.lang.CharSequence orderNumber, java.lang.Long orderId, java.lang.CharSequence skuCode, java.lang.Integer quantity, java.lang.CharSequence email, java.lang.CharSequence firstName, java.lang.CharSequence lastName) {
     this.orderNumber = orderNumber;
+    this.orderId = orderId;
+    this.skuCode = skuCode;
+    this.quantity = quantity;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -109,9 +119,12 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return orderNumber;
-    case 1: return email;
-    case 2: return firstName;
-    case 3: return lastName;
+    case 1: return orderId;
+    case 2: return skuCode;
+    case 3: return quantity;
+    case 4: return email;
+    case 5: return firstName;
+    case 6: return lastName;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -122,9 +135,12 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: orderNumber = (java.lang.CharSequence)value$; break;
-    case 1: email = (java.lang.CharSequence)value$; break;
-    case 2: firstName = (java.lang.CharSequence)value$; break;
-    case 3: lastName = (java.lang.CharSequence)value$; break;
+    case 1: orderId = (java.lang.Long)value$; break;
+    case 2: skuCode = (java.lang.CharSequence)value$; break;
+    case 3: quantity = (java.lang.Integer)value$; break;
+    case 4: email = (java.lang.CharSequence)value$; break;
+    case 5: firstName = (java.lang.CharSequence)value$; break;
+    case 6: lastName = (java.lang.CharSequence)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -144,6 +160,57 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
    */
   public void setOrderNumber(java.lang.CharSequence value) {
     this.orderNumber = value;
+  }
+
+  /**
+   * Gets the value of the 'orderId' field.
+   * @return The value of the 'orderId' field.
+   */
+  public java.lang.Long getOrderId() {
+    return orderId;
+  }
+
+
+  /**
+   * Sets the value of the 'orderId' field.
+   * @param value the value to set.
+   */
+  public void setOrderId(java.lang.Long value) {
+    this.orderId = value;
+  }
+
+  /**
+   * Gets the value of the 'skuCode' field.
+   * @return The value of the 'skuCode' field.
+   */
+  public java.lang.CharSequence getSkuCode() {
+    return skuCode;
+  }
+
+
+  /**
+   * Sets the value of the 'skuCode' field.
+   * @param value the value to set.
+   */
+  public void setSkuCode(java.lang.CharSequence value) {
+    this.skuCode = value;
+  }
+
+  /**
+   * Gets the value of the 'quantity' field.
+   * @return The value of the 'quantity' field.
+   */
+  public java.lang.Integer getQuantity() {
+    return quantity;
+  }
+
+
+  /**
+   * Sets the value of the 'quantity' field.
+   * @param value the value to set.
+   */
+  public void setQuantity(java.lang.Integer value) {
+    this.quantity = value;
   }
 
   /**
@@ -239,6 +306,9 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
     implements org.apache.avro.data.RecordBuilder<OrderPlacedEvent> {
 
     private java.lang.CharSequence orderNumber;
+    private java.lang.Long orderId;
+    private java.lang.CharSequence skuCode;
+    private java.lang.Integer quantity;
     private java.lang.CharSequence email;
     private java.lang.CharSequence firstName;
     private java.lang.CharSequence lastName;
@@ -258,17 +328,29 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
         this.orderNumber = data().deepCopy(fields()[0].schema(), other.orderNumber);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.email)) {
-        this.email = data().deepCopy(fields()[1].schema(), other.email);
+      if (isValidValue(fields()[1], other.orderId)) {
+        this.orderId = data().deepCopy(fields()[1].schema(), other.orderId);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.firstName)) {
-        this.firstName = data().deepCopy(fields()[2].schema(), other.firstName);
+      if (isValidValue(fields()[2], other.skuCode)) {
+        this.skuCode = data().deepCopy(fields()[2].schema(), other.skuCode);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.lastName)) {
-        this.lastName = data().deepCopy(fields()[3].schema(), other.lastName);
+      if (isValidValue(fields()[3], other.quantity)) {
+        this.quantity = data().deepCopy(fields()[3].schema(), other.quantity);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
+      }
+      if (isValidValue(fields()[4], other.email)) {
+        this.email = data().deepCopy(fields()[4].schema(), other.email);
+        fieldSetFlags()[4] = other.fieldSetFlags()[4];
+      }
+      if (isValidValue(fields()[5], other.firstName)) {
+        this.firstName = data().deepCopy(fields()[5].schema(), other.firstName);
+        fieldSetFlags()[5] = other.fieldSetFlags()[5];
+      }
+      if (isValidValue(fields()[6], other.lastName)) {
+        this.lastName = data().deepCopy(fields()[6].schema(), other.lastName);
+        fieldSetFlags()[6] = other.fieldSetFlags()[6];
       }
     }
 
@@ -282,17 +364,29 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
         this.orderNumber = data().deepCopy(fields()[0].schema(), other.orderNumber);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.email)) {
-        this.email = data().deepCopy(fields()[1].schema(), other.email);
+      if (isValidValue(fields()[1], other.orderId)) {
+        this.orderId = data().deepCopy(fields()[1].schema(), other.orderId);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.firstName)) {
-        this.firstName = data().deepCopy(fields()[2].schema(), other.firstName);
+      if (isValidValue(fields()[2], other.skuCode)) {
+        this.skuCode = data().deepCopy(fields()[2].schema(), other.skuCode);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.lastName)) {
-        this.lastName = data().deepCopy(fields()[3].schema(), other.lastName);
+      if (isValidValue(fields()[3], other.quantity)) {
+        this.quantity = data().deepCopy(fields()[3].schema(), other.quantity);
         fieldSetFlags()[3] = true;
+      }
+      if (isValidValue(fields()[4], other.email)) {
+        this.email = data().deepCopy(fields()[4].schema(), other.email);
+        fieldSetFlags()[4] = true;
+      }
+      if (isValidValue(fields()[5], other.firstName)) {
+        this.firstName = data().deepCopy(fields()[5].schema(), other.firstName);
+        fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.lastName)) {
+        this.lastName = data().deepCopy(fields()[6].schema(), other.lastName);
+        fieldSetFlags()[6] = true;
       }
     }
 
@@ -337,6 +431,126 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
     }
 
     /**
+      * Gets the value of the 'orderId' field.
+      * @return The value.
+      */
+    public java.lang.Long getOrderId() {
+      return orderId;
+    }
+
+
+    /**
+      * Sets the value of the 'orderId' field.
+      * @param value The value of 'orderId'.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder setOrderId(java.lang.Long value) {
+      validate(fields()[1], value);
+      this.orderId = value;
+      fieldSetFlags()[1] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'orderId' field has been set.
+      * @return True if the 'orderId' field has been set, false otherwise.
+      */
+    public boolean hasOrderId() {
+      return fieldSetFlags()[1];
+    }
+
+
+    /**
+      * Clears the value of the 'orderId' field.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder clearOrderId() {
+      orderId = null;
+      fieldSetFlags()[1] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'skuCode' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getSkuCode() {
+      return skuCode;
+    }
+
+
+    /**
+      * Sets the value of the 'skuCode' field.
+      * @param value The value of 'skuCode'.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder setSkuCode(java.lang.CharSequence value) {
+      validate(fields()[2], value);
+      this.skuCode = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'skuCode' field has been set.
+      * @return True if the 'skuCode' field has been set, false otherwise.
+      */
+    public boolean hasSkuCode() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'skuCode' field.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder clearSkuCode() {
+      skuCode = null;
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'quantity' field.
+      * @return The value.
+      */
+    public java.lang.Integer getQuantity() {
+      return quantity;
+    }
+
+
+    /**
+      * Sets the value of the 'quantity' field.
+      * @param value The value of 'quantity'.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder setQuantity(java.lang.Integer value) {
+      validate(fields()[3], value);
+      this.quantity = value;
+      fieldSetFlags()[3] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'quantity' field has been set.
+      * @return True if the 'quantity' field has been set, false otherwise.
+      */
+    public boolean hasQuantity() {
+      return fieldSetFlags()[3];
+    }
+
+
+    /**
+      * Clears the value of the 'quantity' field.
+      * @return This builder.
+      */
+    public com.microservices.order_service.event.OrderPlacedEvent.Builder clearQuantity() {
+      quantity = null;
+      fieldSetFlags()[3] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'email' field.
       * @return The value.
       */
@@ -351,9 +565,9 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return This builder.
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder setEmail(java.lang.CharSequence value) {
-      validate(fields()[1], value);
+      validate(fields()[4], value);
       this.email = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[4] = true;
       return this;
     }
 
@@ -362,7 +576,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return True if the 'email' field has been set, false otherwise.
       */
     public boolean hasEmail() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[4];
     }
 
 
@@ -372,7 +586,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder clearEmail() {
       email = null;
-      fieldSetFlags()[1] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -391,9 +605,9 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return This builder.
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder setFirstName(java.lang.CharSequence value) {
-      validate(fields()[2], value);
+      validate(fields()[5], value);
       this.firstName = value;
-      fieldSetFlags()[2] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -402,7 +616,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return True if the 'firstName' field has been set, false otherwise.
       */
     public boolean hasFirstName() {
-      return fieldSetFlags()[2];
+      return fieldSetFlags()[5];
     }
 
 
@@ -412,7 +626,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder clearFirstName() {
       firstName = null;
-      fieldSetFlags()[2] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -431,9 +645,9 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return This builder.
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder setLastName(java.lang.CharSequence value) {
-      validate(fields()[3], value);
+      validate(fields()[6], value);
       this.lastName = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -442,7 +656,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       * @return True if the 'lastName' field has been set, false otherwise.
       */
     public boolean hasLastName() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[6];
     }
 
 
@@ -452,7 +666,7 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       */
     public com.microservices.order_service.event.OrderPlacedEvent.Builder clearLastName() {
       lastName = null;
-      fieldSetFlags()[3] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -462,9 +676,12 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       try {
         OrderPlacedEvent record = new OrderPlacedEvent();
         record.orderNumber = fieldSetFlags()[0] ? this.orderNumber : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.email = fieldSetFlags()[1] ? this.email : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.firstName = fieldSetFlags()[2] ? this.firstName : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.lastName = fieldSetFlags()[3] ? this.lastName : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.orderId = fieldSetFlags()[1] ? this.orderId : (java.lang.Long) defaultValue(fields()[1]);
+        record.skuCode = fieldSetFlags()[2] ? this.skuCode : (java.lang.CharSequence) defaultValue(fields()[2]);
+        record.quantity = fieldSetFlags()[3] ? this.quantity : (java.lang.Integer) defaultValue(fields()[3]);
+        record.email = fieldSetFlags()[4] ? this.email : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.firstName = fieldSetFlags()[5] ? this.firstName : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.lastName = fieldSetFlags()[6] ? this.lastName : (java.lang.CharSequence) defaultValue(fields()[6]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -499,6 +716,30 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
   {
     out.writeString(this.orderNumber);
 
+    if (this.orderId == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeLong(this.orderId);
+    }
+
+    if (this.skuCode == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeString(this.skuCode);
+    }
+
+    if (this.quantity == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeInt(this.quantity);
+    }
+
     out.writeString(this.email);
 
     out.writeString(this.firstName);
@@ -514,6 +755,27 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
     if (fieldOrder == null) {
       this.orderNumber = in.readString(this.orderNumber instanceof Utf8 ? (Utf8)this.orderNumber : null);
 
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.orderId = null;
+      } else {
+        this.orderId = in.readLong();
+      }
+
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.skuCode = null;
+      } else {
+        this.skuCode = in.readString(this.skuCode instanceof Utf8 ? (Utf8)this.skuCode : null);
+      }
+
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.quantity = null;
+      } else {
+        this.quantity = in.readInt();
+      }
+
       this.email = in.readString(this.email instanceof Utf8 ? (Utf8)this.email : null);
 
       this.firstName = in.readString(this.firstName instanceof Utf8 ? (Utf8)this.firstName : null);
@@ -521,21 +783,48 @@ public class OrderPlacedEvent extends org.apache.avro.specific.SpecificRecordBas
       this.lastName = in.readString(this.lastName instanceof Utf8 ? (Utf8)this.lastName : null);
 
     } else {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 7; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.orderNumber = in.readString(this.orderNumber instanceof Utf8 ? (Utf8)this.orderNumber : null);
           break;
 
         case 1:
-          this.email = in.readString(this.email instanceof Utf8 ? (Utf8)this.email : null);
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.orderId = null;
+          } else {
+            this.orderId = in.readLong();
+          }
           break;
 
         case 2:
-          this.firstName = in.readString(this.firstName instanceof Utf8 ? (Utf8)this.firstName : null);
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.skuCode = null;
+          } else {
+            this.skuCode = in.readString(this.skuCode instanceof Utf8 ? (Utf8)this.skuCode : null);
+          }
           break;
 
         case 3:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.quantity = null;
+          } else {
+            this.quantity = in.readInt();
+          }
+          break;
+
+        case 4:
+          this.email = in.readString(this.email instanceof Utf8 ? (Utf8)this.email : null);
+          break;
+
+        case 5:
+          this.firstName = in.readString(this.firstName instanceof Utf8 ? (Utf8)this.firstName : null);
+          break;
+
+        case 6:
           this.lastName = in.readString(this.lastName instanceof Utf8 ? (Utf8)this.lastName : null);
           break;
 

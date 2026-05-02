@@ -27,7 +27,7 @@ jobs:
           - service: order-service
             context: order-service
           - service: inventory-service
-            context: inventory_service
+            context: inventory-service
           - service: notification-service
             context: notification-service
           - service: frontend

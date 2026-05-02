@@ -9,9 +9,9 @@
         <relativePath/>
     </parent>
     <groupId>com.microservices</groupId>
-    <artifactId>inventory_service</artifactId>
+    <artifactId>inventory-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>inventory_service</name>
+    <name>inventory-service</name>
     <description>project for Spring Boot microservice</description>
 
     <properties>

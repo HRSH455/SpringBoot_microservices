@@ -96,6 +96,7 @@ jobs:
           image-ref: ${{ env.REGISTRY }}/${{ needs.prepare.outputs.image_name }}/${{ matrix.service }}:main
           format: 'sarif'
           output: 'trivy-${{ matrix.service }}.sarif'
+          cache-dir: .trivy-${{ matrix.service }} 
 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v3
